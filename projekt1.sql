@@ -8,6 +8,11 @@ order by
 cp.payroll_year, industry_branch_code
 )
 SELECT
-*
+payroll_year, name,
+avgperyear - (LAG (avgperyear) OVER (PARTITION BY industry_branch_code ORDER BY payroll_year))
+ as Differences
 FROM
-prumernamzda as pm JOIN  czechia_payroll_industry_branch as cpib on pm.industry_branch_code = cpib.code;
+prumernamzda as pm JOIN  czechia_payroll_industry_branch as cpib on pm.industry_branch_code = cpib.code
+ORDER BY 
+Differences;
+
