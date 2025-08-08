@@ -2,6 +2,8 @@
 
 Here is an intro to my SQL project for Engeto Data Academy. 
 
+Poznámka o chybě v tisících zaměstnanců. V korunách v calculation Code nebo unit Code
+
 
 1. Resarch question no.1: Do salaries increase across all industry branches, or are there any decreases as well?
 
