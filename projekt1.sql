@@ -1,3 +1,6 @@
+/*Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?*/
+
+
 WITH prumernamzda as (
 SELECT 
 ROUND (AVG(cp.value)::numeric,0) as AvgPerYear, industry_branch_code , payroll_year
@@ -8,7 +11,7 @@ order by
 cp.payroll_year, industry_branch_code
 )
 SELECT
-payroll_year, name,
+payroll_year, name,code, 
 avgperyear - (LAG (avgperyear) OVER (PARTITION BY industry_branch_code ORDER BY payroll_year))
  as Differences
 FROM
@@ -16,3 +19,54 @@ prumernamzda as pm JOIN  czechia_payroll_industry_branch as cpib on pm.industry_
 ORDER BY 
 Differences;
 
+ /* Kolik je možné si koupit litrů mléka a kilogramů chleba za první a poslední 
+ * srovnatelné období v dostupných datech cen a mezd?*/
+
+WITH cistka as 
+	(SELECT 
+	value, 
+	category_code, 
+	CASE 
+		when date_from = '2006-01-02 01:00:00.000 +0100' then '2,006'
+		when date_to = '2018-12-16 01:00:00.000 +0100' then '2,018'
+		ELSE null
+		END AS Comparing
+	FROM
+	czechia_price as cp 
+		where (category_code = '114201' and region_code IS NULL)
+		OR (category_code = '111301' and region_code IS NULL)
+	), 
+vypocet as (
+	SELECT 
+	payroll_year,
+	AVG (value) as PrumernaMzda 
+	from czechia_payroll 
+	where value_type_code = '5958' 
+	and unit_code = '200' 
+	and calculation_code = '200' 
+	and industry_branch_code is null and value is not null
+	GROUP BY 
+	payroll_year
+	ORDER BY payroll_year)
+SELECT
+c.category_code, cpc.name, cpc.price_unit, c.comparing
+from cistka as c
+join czechia_price_category as cpc on c.category_code=cpc.code 
+where comparing IS NOT NULL
+
+
+SELECT 
+MIN (date_from) as PrvniObdobi, 
+MAX (date_to) as PosledniObdobi
+FROM
+czechia_price as cp 
+
+SELECT payroll_year, AVG (value) as PrumernaMzda 
+from czechia_payroll 
+where value_type_code = '5958' 
+and unit_code = '200' 
+and calculation_code = '200' 
+and industry_branch_code is null and value is not null
+GROUP BY 
+payroll_year
+ORDER BY payroll_year 
