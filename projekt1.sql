@@ -42,7 +42,7 @@ VypocetPrumerneMzdy as (
 	SELECT 
 	payroll_year,
 	payroll_quarter,
-	AVG (value) as PrumernaMzda 
+	AVG (value) as Prumerna_Mzda 
 	from czechia_payroll 
 	where value_type_code = '5958' 
 	and unit_code = '200' 
@@ -53,12 +53,34 @@ VypocetPrumerneMzdy as (
 	ORDER BY payroll_year
 	)
 SELECT
-	AVG(value) as PrumCenaZaJednotku, cpr.year, cpr.price_quarter, cpr.category_code, cpc.name, prumernamzda, ROUND ((prumernamzda/AVG(value))::numeric, 0) as PocetZakoupenychJednotek
+	AVG(value) as Prum_Cena_Za_Jednotku, cpr.year, cpr.price_quarter, cpr.category_code, cpc.name, prumerna_mzda, ROUND ((prumerna_mzda/AVG(value))::numeric, 0) as Pocet_Zakoupenych_Jednotek
 	from CenyPrumer cpr
 	join czechia_price_category as cpc on cpr.category_code=cpc.code
 	join VypocetPrumerneMzdy as vpm on vpm.payroll_year=cpr.year and vpm.payroll_quarter=cpr.price_quarter 
 	where cpr.category_code in ('111301','114201') and ((cpr.year = '2006' and cpr.price_quarter = '1') or (cpr.year = '2018' and cpr.price_quarter = '4'))
-	group by year, price_quarter, category_code, cpc.name, prumernamzda 
+	group by year, price_quarter, category_code, cpc.name, prumerna_mzda 
 	order by cpc.name, year, price_quarter , category_code;
+
+
+
+ /* Která kategorie potravin zdražuje nejpomaleji (je u ní nejnižší percentuální meziroční nárůst)? 
+  * Existuje rok, ve kterém byl meziroční nárůst cen potravin výrazně vyšší než růst mezd (větší než 10 %)?*/
+
+WITH Zkouska as (SELECT 
+ROUND (AVG(value)::numeric,2) as prumerna_cena, category_code, date_part('year', date_from) as year
+FROM 
+czechia_price as cp 
+GROUP BY 
+year, category_code 
+ORDER BY
+year, category_code )
+SELECT 
+*, LAG (prumerna_cena) OVER (PARTITION BY category_code ORDER BY year) as Predchozi_Rok
+FROM Zkouska
+
+
+
+
+
 
 
