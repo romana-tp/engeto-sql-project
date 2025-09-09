@@ -79,6 +79,65 @@ SELECT
 FROM Zkouska
 
 
+CREATE TEMPORARY TABLE Testik as 
+SELECT 
+*
+FROM
+czechia_price
+
+
+	
+SELECT 
+ROUND (AVG(cp.value)::numeric,0) as AvgPerYear, cpib.name , cp.payroll_year, cp.payroll_quarter 
+FROM czechia_payroll as cp
+JOIN czechia_payroll_industry_branch as cpib on cp.industry_branch_code = cpib.code
+WHERE unit_code = '200' AND calculation_code = '200' AND value IS NOT NULL and value_type_code  = '5958' and 
+industry_branch_code IS NOT NULL
+GROUP BY cpib.code , cp.payroll_year, cp.payroll_quarter 
+ORDER BY 
+cp.payroll_year, cpib.name
+
+
+
+CREATE TEMP TABLE mzdy_a_ceny AS
+WITH mzdy AS (
+SELECT 
+ROUND (AVG(cp.value)::numeric,0) as prumerna_mzda, cpib.name , cp.payroll_year, cp.payroll_quarter 
+FROM czechia_payroll as cp
+JOIN czechia_payroll_industry_branch as cpib on cp.industry_branch_code = cpib.code
+WHERE unit_code = '200' AND calculation_code = '200' AND value IS NOT NULL and value_type_code  = '5958' and 
+industry_branch_code IS NOT NULL
+GROUP BY cpib.code , cp.payroll_year, cp.payroll_quarter 
+ORDER BY 
+cp.payroll_year, cpib.name
+), 
+ceny AS (
+	SELECT 
+	value, 
+	category_code, 
+	date_part('year', date_from) as year,
+	CASE when TO_CHAR(date_from, 'MM-DD') BETWEEN '01-01' AND '03-31' then 1
+	when TO_CHAR(date_from, 'MM-DD') BETWEEN '04-01' AND '06-30' then 2
+	when TO_CHAR(date_from, 'MM-DD') BETWEEN '07-01' AND '09-30'then 3
+	ELSE 4
+	END AS price_quarter
+	FROM
+	czechia_price as cp 
+		where  region_code IS NOT NULL
+	group by  value, category_code, price_quarter , year
+	order by  category_code
+	)
+SELECT
+*
+FROM
+mzdy JOIN ceny on mzdy.payroll_year=ceny.year and mzdy.payroll_quarter=ceny.price_quarter
+
+SELECT * from mzdy_a_ceny
+	
+
+
+
+
 
 
 
