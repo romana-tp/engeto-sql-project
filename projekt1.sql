@@ -76,6 +76,7 @@ GROUP BY
 	industry_branch_code, 
 	category_code;
 
+SELECT * from t_Romana_Tomeckova_project_SQL_primary_final
 
 /** Question 1: Do payrolls increase across all industries over the years,
  *  or do some industries experience a decline?**/
@@ -105,3 +106,81 @@ GROUP BY
 	payroll_year, name
 ORDER BY 
 	Differences;
+
+
+/** Question 2: How many liters of milk and kilograms of bread could be purchased in the first and 
+ * last comparable periods covered by the available price and wage data?**/
+
+
+WITH quarter_pay AS (
+	SELECT
+		AVG (avg_payroll) as avg_payroll_all, 
+		payroll_year, 
+		payroll_quarter
+	FROM 
+		t_Romana_Tomeckova_project_SQL_primary_final as payroll_and_price
+	GROUP BY
+		payroll_year, payroll_quarter
+	)
+, quarter_price AS (
+	SELECT
+		category_code,
+        name_of_product,
+        payroll_year,
+        payroll_quarter,
+        AVG(avg_price) AS avg_price_all
+    FROM 
+    	t_Romana_Tomeckova_project_SQL_primary_final as payroll_and_price 
+    GROUP BY 
+    	category_code, name_of_product, payroll_year, payroll_quarter
+    	)
+SELECT 
+	ROUND (qp.avg_payroll_all / qpr.avg_price_all::numeric,0) as Unit_Count, 
+	qpr.category_code, 
+	qpr.name_of_product, 
+	qp.payroll_year, 
+	qp.payroll_quarter
+FROM
+	quarter_pay qp 
+		LEFT JOIN 
+		quarter_price qpr 
+		ON qp.payroll_year= qpr.payroll_year and qp.payroll_quarter = qpr.payroll_quarter
+WHERE
+	qpr.category_code IN ('111301','114201') 
+	AND ((qp.payroll_year = 2006 and qp.payroll_quarter = 1) 
+	OR (qp.payroll_year = 2018 and qp.payroll_quarter = 4));
+
+
+
+/**Question 3: Which category of food has the slowest price increase (i.e., the lowest year-on-year percentage growth)? **/
+
+
+
+WITH overview AS (
+	SELECT
+		category_code,
+        name_of_product,
+        payroll_year,
+        (AVG(avg_price) 
+        - LAG (AVG(avg_price)) OVER (PARTITION BY name_of_product ORDER BY payroll_year))
+        /LAG (AVG(avg_price))  OVER (PARTITION BY name_of_product ORDER BY payroll_year)*100 as percent
+    FROM 
+    	t_Romana_Tomeckova_project_SQL_primary_final AS payroll_and_price
+    GROUP BY 
+    	category_code, name_of_product, payroll_year
+    HAVING
+    	name_of_product IS NOT NULL
+    	)
+SELECT 
+	category_code, name_of_product , AVG (percent) as percent_growth
+FROM 
+	overview
+GROUP BY
+	category_code, name_of_product
+ORDER BY
+	percent_growth ASC
+LIMIT 
+	1;
+
+
+

@@ -17,11 +17,26 @@ Answer: There are a few industry branches and payroll years where we can see a d
 
 2. Research question no. 2: How many liters of milk and kilograms of bread can be purchased in the first and last comparable periods in the available price and wage data?
 
+First, using CTEs, I created temporary tables summarizing the average wages and the prices of bread and milk for each quarter. Then, I joined these tables and selected the first and last quarters from the available data. I also added a calculation of how many units of these products could be purchased with the average wage.
+
+Answer: According to the resulting table, in the first comparable period (the first quarter of 2006), it was possible to buy 1,371 kilograms of bread, and in the last period (the fourth quarter of 2018), 1,470 kilograms of bread.
+During the same periods, it was possible to purchase 1,407 liters of milk in the first period, and 1,803 liters of milk in the last period.
 
 
-Answer: According to the resulting table, in the first comparable period (the first quarter of 2006), it was possible to buy 1,252 units (kg) of bread, and in the last period (the fourth quarter of 2018), 1,426 units (kg) of bread.
-In the same periods, it was possible to purchase 1,284 units (liters) of milk in the first period, and 1,749 units (liters) of milk in the second period.
+3. Research question no. 3: Which category of food has the slowest price increase (i.e., the lowest year-on-year percentage growth)? 
+
+Using a CTE, I prepared a table with the average yearly prices of food products. I also calculated the year-on-year price growth in percentages using the LAG window function. From the resulting selection, I then identified the single value representing the product with the slowest average price increase.
+
+Answer: The lowest year-on-year growth was observed for the category White Crystal Sugar, which, on average, decreased in price by 1.9% over the entire available period.
 
 
-3. Research question no. 3: Which category of food has the slowest price increase (i.e., the lowest year-on-year percentage growth)? Is there a year in which the year-on-year increase in food prices was significantly higher than wage growth (by more than 10%)?
+4. Research question no. 4: Is there a year in which the year-on-year increase in food prices was significantly higher than wage growth (by more than 10%)?
+
+I first calculated average yearly food prices (yearly_price) excluding category 212101 (because "Wine" has just data for several years, but not the whole period from 2006 to 2018) and average yearly wages (yearly_pay) using CTEs. Using the LAG() window function, I computed the year-on-year percentage changes for both wages (percentpay) and food prices (percentprice). I then calculated the difference between the price growth and wage growth (DifferencePercent) to identify years where price increases exceeded wage growth. Finally, I ordered the results by DifferencePercent in descending order.
+
+Answer: There is no year in the available data where the year-on-year increase in food prices exceeded wage growth by more than 10%. The closest was 2013, when food prices grew about 7% faster than wages. However, if we consider only the growth in food prices themselves, in 2017 prices increased by more than 10%, which was higher than the wage growth of approximately 6% that year.
+
+
+
+
 
