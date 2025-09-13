@@ -32,11 +32,17 @@ Answer: The lowest year-on-year growth was observed for the category White Cryst
 
 4. Research question no. 4: Is there a year in which the year-on-year increase in food prices was significantly higher than wage growth (by more than 10%)?
 
+I was not sure if I had all years data for all food products, so I checked it with 
+
 I first calculated average yearly food prices (yearly_price) excluding category 212101 (because "Wine" has just data for several years, but not the whole period from 2006 to 2018) and average yearly wages (yearly_pay) using CTEs. Using the LAG() window function, I computed the year-on-year percentage changes for both wages (percentpay) and food prices (percentprice). I then calculated the difference between the price growth and wage growth (DifferencePercent) to identify years where price increases exceeded wage growth. Finally, I ordered the results by DifferencePercent in descending order.
 
 Answer: There is no year in the available data where the year-on-year increase in food prices exceeded wage growth by more than 10%. The closest was 2013, when food prices grew about 7% faster than wages. However, if we consider only the growth in food prices themselves, in 2017 prices increased by more than 10%, which was higher than the wage growth of approximately 6% that year.
 
 
+5. Research question no. 5: Does the level of GDP affect changes in wages and food prices? In other words, if GDP increases significantly in a given year, does this lead to a noticeably higher increase in wages or food prices in the same or the following year?
 
+By using CTEs, I calculated the average yearly wages (yearly_pay) and average yearly food prices (yearly_price) excluding category 212101 (because of the same reason as in the previous case - I did not want to influence data by adding the "Wine" product which lacks values for several years). I also prepared a table with yearly GDP for the Czech Republic. Using the LAG() window function, I calculated year-on-year percentage changes for wages, prices, and GDP. Additionally, I created a 2-year lag for GDP to see if GDP growth affects wages or prices with a delay. Finally, I calculated correlations between GDP growth and the growth of wages and prices:
+
+GDP growth appears to have a stronger effect on wages than on food prices, particularly when considering a 1-year lag (correlation of 0.44 in the same year and 0.68 with a one-year lag). Food prices do not show a clear delayed response to changes in GDP.
 
 
