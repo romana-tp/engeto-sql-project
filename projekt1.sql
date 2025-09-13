@@ -1,63 +1,79 @@
-/*Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?*/
+/**Create a table with payroll and prices for Czech republic which includes comparable period of time**/
 
 
-WITH prumernamzda as (
-SELECT 
-ROUND (AVG(cp.value)::numeric,0) as AvgPerYear, industry_branch_code , payroll_year
-FROM czechia_payroll as cp
-WHERE unit_code = '200' AND calculation_code = '200' AND value IS NOT NULL and value_type_code  = '5958' and industry_branch_code IS NOT NULL
-GROUP BY payroll_year, industry_branch_code
-ORDER BY 
-cp.payroll_year, industry_branch_code
-)
-SELECT
-payroll_year, name,code, 
-avgperyear - (LAG (avgperyear) OVER (PARTITION BY industry_branch_code ORDER BY payroll_year))
- AS Differences
-FROM
-prumernamzda as pm JOIN  czechia_payroll_industry_branch as cpib on pm.industry_branch_code = cpib.code
-ORDER BY 
-Differences;
-
- /* Kolik je možné si koupit litrů mléka a kilogramů chleba za první a poslední 
- * srovnatelné období v dostupných datech cen a mezd?*/
-
-WITH CenyPrumer as (
-	SELECT 
-	value, 
-	category_code, 
-	date_part('year', date_from) as year,
-	CASE when TO_CHAR(date_from, 'MM-DD') BETWEEN '01-01' AND '03-31' then 1
-	when TO_CHAR(date_from, 'MM-DD') BETWEEN '04-01' AND '06-30' then 2
-	when TO_CHAR(date_from, 'MM-DD') BETWEEN '07-01' AND '09-30'then 3
-	ELSE 4
-	END AS price_quarter
-	FROM
-	czechia_price as cp 
-		where  region_code IS NOT NULL
-	group by  value, category_code, price_quarter , year
-	order by  category_code
-	),
-VypocetPrumerneMzdy as (
-	SELECT 
-	payroll_year,
-	payroll_quarter,
-	AVG (value) as Prumerna_Mzda 
-	from czechia_payroll 
-	where value_type_code = '5958' 
-	and unit_code = '200' 
-	and calculation_code = '200' 
-	and industry_branch_code is null and value is not null
+CREATE TABLE t_Romana_Tomeckova_project_SQL_primary_final AS
+	WITH payroll AS (
+		SELECT 
+			ROUND (AVG(cp.value)::numeric,0) AS avg_payroll, 
+			cpib.name, 
+			cp.payroll_year, 
+			cp.payroll_quarter, 
+			cp.industry_branch_code
+		FROM 
+			czechia_payroll AS cp
+			JOIN czechia_payroll_industry_branch AS cpib 
+			ON cp.industry_branch_code = cpib.code
+		WHERE 
+			unit_code = '200' 
+			AND calculation_code = '200' 
+			AND value IS NOT NULL 
+			AND value_type_code  = '5958' 
+			AND industry_branch_code IS NOT NULL
 	GROUP BY 
-	payroll_year, payroll_quarter
-	ORDER BY payroll_year
+		cpib.code, 
+		cp.payroll_year, 
+		cp.payroll_quarter, 
+		cp.industry_branch_code
+	ORDER BY 
+		cp.payroll_year, cpib.name
+	), 
+price AS (
+		SELECT 
+			cp.value, 
+			cp.category_code, 
+			name AS name_of_product,
+			date_part ('year',date_from) AS price_year,
+			CASE WHEN TO_CHAR(date_from, 'MM-DD') BETWEEN '01-01' AND '03-31' THEN 1
+			WHEN TO_CHAR(date_from, 'MM-DD') BETWEEN '04-01' AND '06-30' THEN 2
+			WHEN TO_CHAR(date_from, 'MM-DD') BETWEEN '07-01' AND '09-30'THEN 3
+			ELSE 4
+			END AS price_quarter
+		FROM
+			czechia_price AS cp 
+			JOIN czechia_price_category AS cpc 
+			ON cp.category_code=cpc.code
+		WHERE  
+			region_code IS NOT NULL
+		GROUP BY  
+			cp.value, 
+			cp.category_code, 
+			price_quarter, 
+			price_year,
+			name_of_product
+		ORDER BY  
+			cp.category_code
 	)
 SELECT
-	AVG(value) as Prum_Cena_Za_Jednotku, cpr.year, cpr.price_quarter, cpr.category_code, cpc.name, prumerna_mzda, ROUND ((prumerna_mzda/AVG(value))::numeric, 0) as Pocet_Zakoupenych_Jednotek
-	from CenyPrumer cpr
-	join czechia_price_category as cpc on cpr.category_code=cpc.code
-	join VypocetPrumerneMzdy as vpm on vpm.payroll_year=cpr.year and vpm.payroll_quarter=cpr.price_quarter 
-	where cpr.category_code in ('111301','114201') and ((cpr.year = '2006' and cpr.price_quarter = '1') or (cpr.year = '2018' and cpr.price_quarter = '4'))
-	group by year, price_quarter, category_code, cpc.name, prumerna_mzda 
-	order by cpc.name, year, price_quarter , category_code;
+	avg_payroll, 
+	name, 
+	industry_branch_code, 
+	payroll_year, 
+	payroll_quarter, 
+	AVG (value) AS avg_price, 
+	name_of_product, 
+	category_code
+FROM
+	payroll 
+	LEFT JOIN price 
+	ON payroll.payroll_year=price.price_year 
+	AND payroll.payroll_quarter=price.price_quarter
+GROUP BY
+	avg_payroll, 
+	name, 
+	payroll_year, 
+	payroll_quarter, 
+	name_of_product, 
+	industry_branch_code, 
+	category_code;
+
 
