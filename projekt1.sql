@@ -172,7 +172,8 @@ WITH overview AS (
     	name_of_product IS NOT NULL
     	)
 SELECT 
-	category_code, name_of_product , AVG (percent) as percent_growth
+	category_code, name_of_product , 
+	ROUND (AVG (percent)::numeric,2) as percent_growth
 FROM 
 	overview
 GROUP BY
@@ -240,14 +241,23 @@ pay as(
 		payroll_year)
 SELECT
 	price.payroll_year,
-	(Yearly_pay - LAG (yearly_pay) OVER (ORDER BY price.payroll_year))
-		/(LAG (yearly_pay) OVER (ORDER BY price.payroll_year))*100 as percentpay, 
-	(yearly_price-LAG (yearly_price) OVER (ORDER BY price.payroll_year))
-		/(LAG (yearly_price) OVER (ORDER BY price.payroll_year))*100 as percentprice, 
-	((yearly_price-LAG (yearly_price) OVER (ORDER BY price.payroll_year))
+	ROUND((
+		(Yearly_pay - LAG (yearly_pay) OVER (ORDER BY price.payroll_year))
+		/(LAG (yearly_pay) OVER (ORDER BY price.payroll_year))*100 
+		)::numeric, 2
+    ) as percentpay, 
+	ROUND ((
+		(yearly_price-LAG (yearly_price) OVER (ORDER BY price.payroll_year))
+			/(LAG (yearly_price) OVER (ORDER BY price.payroll_year))*100 
+		)::numeric, 2
+    ) as percentprice, 
+	ROUND ((
+		((yearly_price-LAG (yearly_price) OVER (ORDER BY price.payroll_year))
 		/(LAG (yearly_price) OVER (ORDER BY price.payroll_year))*100) 
 		- ((Yearly_pay - LAG (yearly_pay) OVER (ORDER BY price.payroll_year))
-		/(LAG (yearly_pay) OVER (ORDER BY price.payroll_year))*100) as DifferencePercent
+		/(LAG (yearly_pay) OVER (ORDER BY price.payroll_year))*100) 
+		)::numeric, 2
+    ) as DifferencePercent
 FROM
 	price 
 	JOIN pay 
@@ -336,10 +346,10 @@ WITH price AS (
 		FROM gdp1
 	)
 SELECT
-	corr (gdp_growth_percent_last_year, percentpay) AS correlation_with_payroll, 
-	corr (gdp_growth_percent_last_year, percentprice) AS correlation_with_price, 
-	corr (gdp_growth_percent_last_year2, percentpay)AS correlation_with_payroll_2y, 
-	corr (gdp_growth_percent_last_year2, percentprice) AS correlation_with_price2y
+	ROUND (corr (gdp_growth_percent_last_year, percentpay)::numeric,2) AS correlation_with_payroll, 
+	ROUND (corr (gdp_growth_percent_last_year, percentprice)::numeric, 2) AS correlation_with_price, 
+	ROUND (corr (gdp_growth_percent_last_year2, percentpay):: numeric,2) AS correlation_with_payroll_2y, 
+	ROUND (corr (gdp_growth_percent_last_year2, percentprice)::numeric,2) AS correlation_with_price2y
 FROM 
 	gdp2 JOIN gdp1 
 		ON gdp2.year=gdp1.year;

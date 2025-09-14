@@ -10,7 +10,7 @@ There was a mistake in the original dataset concerning the `czechia_payroll_unit
 
 ## 0. Data Preparation
 
-First of all, I created the primary table containing price and payroll data for the Czech Republic ((`t_Romana_Tomeckova_project_SQL_primary_final`). Using temporary tables, I extracted the data for average payroll within industry branches, filtered by the following conditions: 
+First of all, I created the primary table containing price and payroll data for the Czech Republic (`t_Romana_Tomeckova_project_SQL_primary_final`). Using temporary tables, I extracted the data for average payroll within industry branches, filtered by the following conditions: 
 
 - `unit_code = 200` (values in CZK)  
 - `calculation_code = 200` (to account for full-time equivalent units rather than the headcount of employees)  
