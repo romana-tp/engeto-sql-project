@@ -10,7 +10,7 @@ There was a mistake in the original dataset concerning the `czechia_payroll_unit
 
 ## 0. Data Preparation
 
-First of all, I created the primary table containing price and payroll data for the Czech Republic. Using temporary tables, I extracted the data for average payroll within industry branches, filtered by the following conditions: 
+First of all, I created the primary table containing price and payroll data for the Czech Republic ((`t_Romana_Tomeckova_project_SQL_primary_final`). Using temporary tables, I extracted the data for average payroll within industry branches, filtered by the following conditions: 
 
 - `unit_code = 200` (values in CZK)  
 - `calculation_code = 200` (to account for full-time equivalent units rather than the headcount of employees)  
@@ -78,7 +78,7 @@ There is **no year** in the available data where the year-on-year increase in fo
 
 **Question:** Does the level of GDP affect changes in wages and food prices? In other words, if GDP increases significantly in a given year, does this lead to a noticeably higher increase in wages or food prices in the same or the following year?
 
-By using CTEs, I calculated the average yearly wages (`yearly_pay`) and average yearly food prices (`yearly_price`), again excluding category 212101. I also prepared a table with yearly GDP for the Czech Republic. Using the `LAG()` window function, I calculated year-on-year percentage changes for wages, prices, and GDP. Additionally, I created a 1-year lag for GDP to see if GDP growth affects wages or prices with a delay. Finally, I calculated correlations between GDP growth and the growth of wages and prices.
+Within this question, I created secondary table with data about GDP in Czech Republic and other countries (`t_Romana_Tomeckova_project_SQL_secondary_final`). Then, by using CTEs, I calculated the average yearly wages (`yearly_pay`) and average yearly food prices (`yearly_price`), again excluding category 212101. I also prepared a table with yearly GDP for the Czech Republic. Using the `LAG()` window function, I calculated year-on-year percentage changes for wages, prices, and GDP. Additionally, I created a 1-year lag for GDP to see if GDP growth affects wages or prices with a delay. Finally, I calculated correlations between GDP growth and the growth of wages and prices.
 
 **Answer:**  
 GDP growth appears to have a stronger effect on wages than on food prices, particularly when considering a 1-year lag (**correlation of 0.44 in the same year and 0.68 with a one-year lag**). Food prices do not show a clear delayed response to changes in GDP.

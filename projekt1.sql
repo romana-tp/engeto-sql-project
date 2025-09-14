@@ -261,6 +261,25 @@ ORDER BY
  * if GDP increases significantly in a given year, does this lead to a noticeably higher increase 
  * in wages or food prices in the same or the following year?**/
 
+/**Note: Create secondary table with data about other cuontries**/
+
+CREATE TABLE t_Romana_Tomeckova_project_SQL_secondary_final AS (
+	SELECT DISTINCT
+		country, 
+		year, 
+		gdp
+	FROM
+		economies
+	WHERE 
+		gdp is not null
+	GROUP BY 
+		country, 
+		year, 
+		gdp
+	ORDER BY
+		country);
+	
+/**Skript for the research question**/
 
 WITH price AS (
 		SELECT 
@@ -288,10 +307,9 @@ WITH price AS (
         	year,
         	AVG(gdp) AS gdp
     	FROM 
-    		economies
+    		t_Romana_Tomeckova_project_SQL_secondary_final
     	WHERE 
-    		country LIKE 'Czec%' 
-    		AND gdp IS NOT NULL
+    		country LIKE 'Czec%'
     	GROUP BY 
     	country, 
     	year
@@ -315,10 +333,11 @@ WITH price AS (
 		SELECT 
 			year, 
 			LAG (gdp_growth_percent_last_year) OVER (ORDER BY year) as gdp_growth_percent_last_year2
-		FROM gdp1)
+		FROM gdp1
+	)
 SELECT
-	corr (gdp_growth_percent_last_year , percentpay) AS correlation_with_payroll, 
-	corr (gdp_growth_percent_last_year , percentprice) AS correlation_with_price, 
+	corr (gdp_growth_percent_last_year, percentpay) AS correlation_with_payroll, 
+	corr (gdp_growth_percent_last_year, percentprice) AS correlation_with_price, 
 	corr (gdp_growth_percent_last_year2, percentpay)AS correlation_with_payroll_2y, 
 	corr (gdp_growth_percent_last_year2, percentprice) AS correlation_with_price2y
 FROM 
