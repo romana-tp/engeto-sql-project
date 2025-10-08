@@ -39,13 +39,13 @@ There are a few industry branches and payroll years where we can see a decrease.
 First, using CTEs, I created temporary tables summarizing the average wages and the prices of bread and milk for each quarter. Then, I joined these tables and selected the first and last quarters from the available data. I also added a calculation of how many units of these products could be purchased with the average wage.
 
 **Answer:**  
-- In the first comparable period (Q1 2006):  
-  - Bread: **1,371 kg**  
-  - Milk: **1,407 liters**  
+- Bread:
+  - 2006: **1,313 kg**  
+  - 2018: **1,365 liters**  
 
-- In the last comparable period (Q4 2018):  
-  - Bread: **1,470 kg**  
-  - Milk: **1,803 liters**
+- Milk:  
+  - 2006: **1,670 kg**  
+  - 2018: **1,404 liters**
 
 ---
 
