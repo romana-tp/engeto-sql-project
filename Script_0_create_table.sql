@@ -19,12 +19,12 @@ CREATE TABLE t_Romana_Tomeckova_project_SQL_primary_final AS
 			AND value IS NOT NULL 
 			AND value_type_code  = 5958
 			AND industry_branch_code IS NOT NULL
-	GROUP BY 
-		cpib.code, 
-		cp.payroll_year,  
-		cp.industry_branch_code
-	ORDER BY 
-		cp.payroll_year, cpib.name
+		GROUP BY 
+			cpib.code, 
+			cp.payroll_year,  
+			cp.industry_branch_code
+		ORDER BY 
+			cp.payroll_year, cpib.name
 	), 
 price AS (
 		SELECT 
@@ -54,7 +54,7 @@ SELECT
 FROM
 	payroll 
 	LEFT JOIN price 
-	ON payroll.payroll_year=price.price_year 
+		ON payroll.payroll_year=price.price_year 
 GROUP BY
 	avg_payroll, 
 	name, 
@@ -63,5 +63,3 @@ GROUP BY
 	avg_price,
 	industry_branch_code, 
 	category_code;
-
-SELECT * from t_Romana_Tomeckova_project_SQL_primary_final

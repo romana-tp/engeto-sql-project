@@ -2,6 +2,7 @@
 
 **Intro:**  
 A project focused on assessing the availability of basic foodstuffs to the general public.
+This project was created as part of the SQL module of the Data Academy and focuses on preparing data foundations for analyzing the availability of basic food products in the Czech Republic based on the development of average wages over time. The analysis is based on data from the Czech Open Data Portal (particularly the `czechia_payroll` and `czechia_price` tables) and supplementary datasets about European countries (`economies`, `countries`). The task involved creating two final tables – a primary one (`t_romana_tomeckova_project_SQL_primary_final`) combining information on wages and food prices in the Czech Republic, and a secondary one (`t_romana_tomeckova_project_SQL_secondary_final`) containing macroeconomic indicators (GDP, GINI coefficient, population) of other European countries. Using these datasets, SQL queries were developed to answer research questions focused on wage trends, food price changes, their interrelation, and the potential impact of GDP growth. The final outcome is a public GitHub repository containing all SQL scripts, documentation of the process, and interpretation of the analytical results.
 
 **Note:**  
 There was a mistake in the original dataset concerning the `czechia_payroll_unit` table, where the values "thousands of employees" and "CZK" were mixed up. I corrected this by setting the code `200` for Czech crowns (CZK) and the code `80403` for thousands of employees.
