@@ -64,7 +64,7 @@ The lowest year-on-year growth was observed for the category **White Crystal Sug
 
 **Question:** Is there a year in which the year-on-year increase in food prices was significantly higher than wage growth (by more than 10%)?
 
-Note: I was not sure if data for all food products was available for every year, so I checked it using a helper table called test_food. I found that one product — Wine — lacked data for several years, with values available only for 2015–2018.
+Note: I was not sure if data for all food products was available for every year, so I checked it using a helper table called test_food. I found that one product — Wine — lacked data for several years, with values available only for 4 years.
 
 I first calculated average yearly food prices (`yearly_price`) excluding category 212101 (because "Wine" has incomplete data) and average yearly wages (`yearly_pay`) using CTEs. Using the `LAG()` window function, I computed the year-on-year percentage changes for both wages (`percentpay`) and food prices (`percentprice`). I then calculated the difference (`DifferencePercent`) to identify years where price increases exceeded wage growth. Finally, I ordered the results by `DifferencePercent` in descending order.
 
