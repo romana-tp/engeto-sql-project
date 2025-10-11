@@ -17,7 +17,7 @@ First of all, I created the primary table containing price and payroll data for 
 - `calculation_code = 200` (to account for full-time equivalent units rather than the headcount of employees)  
 - `value_type_code = 5958` (representing average payroll)  
 
-Next, I prepared a table for the average prices of basic foodstuffs. I joined both tables and calculated average values by **year** and by **quarter**. I chose this approach because one of my research questions involved comparing specific time periods (the earliest and the most recent), and by structuring the data this way I was able to compare not only entire years but also corresponding quarters.
+Next, I prepared a table with the average prices of basic foodstuffs and then joined it with the table containing average wages. I calculated the average values by year to make the data comparable over time. I chose this approach because one of my research questions focused on analyzing year-on-year changes and comparing overall growth or decline in both food prices and average wages. By structuring the data this way, I was able to clearly observe how wages and food prices developed across different time periods.
 
 Finally, by joining two additional tables `economies` and `countries`, I created secondary table with macroeconomics data (`t_Romana_Tomeckova_project_SQL_secondary_final`) with various information about countries around the world, such as the capital city, currency, national dish, or average population height as well as GDP, GINI index, tax burden, etc., for a given country and year.
 
