@@ -2,6 +2,7 @@
  * last comparable periods covered by the available price and wage data?**/
 
 
+
 WITH yearly_pay AS (
     SELECT 
         payroll_year,
