@@ -23,8 +23,6 @@ CREATE TABLE t_Romana_Tomeckova_project_SQL_primary_final AS
 			cpib.code, 
 			cp.payroll_year,  
 			cp.industry_branch_code
-		ORDER BY 
-			cp.payroll_year, cpib.name
 	), 
 price AS (
 		SELECT 
@@ -55,6 +53,9 @@ FROM
 	payroll 
 	LEFT JOIN price 
 		ON payroll.payroll_year=price.price_year 
+WHERE 
+	avg_price IS NOT NULL
+	AND avg_payroll IS NOT NULL
 GROUP BY
 	avg_payroll, 
 	name, 
@@ -62,4 +63,4 @@ GROUP BY
 	name_of_product,
 	avg_price,
 	industry_branch_code, 
-	category_code;
+	category_code; 

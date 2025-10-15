@@ -39,7 +39,7 @@ WITH price AS (
 	),
 	gdp_1 AS (
 		SELECT
-    		(Yearly_pay - LAG (yearly_pay) OVER (ORDER BY price.payroll_year))/(LAG (yearly_pay) OVER (ORDER BY price.payroll_year))*100 as percentpay, 
+    		(yearly_pay - LAG (yearly_pay) OVER (ORDER BY price.payroll_year))/(LAG (yearly_pay) OVER (ORDER BY price.payroll_year))*100 as percentpay, 
 			(yearly_price-LAG (yearly_price) OVER (ORDER BY price.payroll_year))/(LAG (yearly_price) OVER (ORDER BY price.payroll_year))*100 as percentprice, 
     		year,
     		(gdp - LAG(gdp) OVER (PARTITION BY country ORDER BY year)) / LAG(gdp) OVER (PARTITION BY country ORDER BY year) * 100 AS gdp_growth_percent_last_year

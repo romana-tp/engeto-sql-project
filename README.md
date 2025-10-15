@@ -41,7 +41,7 @@ There are a few industry branches and payroll years where we can see a decrease.
 First, using CTEs, I created temporary tables summarizing the average wages and the prices of bread and milk for each quarter. Then, I joined these tables and selected the first and last quarters from the available data. I also added a calculation of how many units of these products could be purchased with the average wage.
 
 **Answer:**  
-In **2006**, with the average wage, it was possible to purchase approximately **1,313 kilograms of bread** or **1,670 liters of milk**. By **2018**, the purchasing power had changed slightly — an average wage could buy around **1,365 kilograms of bread** and **1,404 liters of milk**.
+In **2006**, with the average wage, it was possible to purchase approximately **1,313 kilograms of bread** or **1,670 liters of milk**. By **2018**, the purchasing power had changed slightly — an average wage could buy around **1,365 kilograms of bread** or **1,466 liters of milk**.
 
 This means that over the observed period, the affordability of bread improved a little, as people could buy slightly more bread for their wages. In contrast, the affordability of milk declined, since the number of liters that could be purchased with the average wage decreased.
 

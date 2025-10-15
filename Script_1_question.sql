@@ -16,7 +16,7 @@ WITH avg_per_year AS (
 		payroll_year, name
 	)
 SELECT
-	AVG(avg_payroll) - (LAG (AVG(avg_payroll)) OVER (PARTITION BY name ORDER BY payroll_year)) AS Differences, 
+	AVG(avg_payroll) - (LAG (AVG(avg_payroll)) OVER (PARTITION BY name ORDER BY payroll_year)) AS differences, 
 	name, 
 	payroll_year
 FROM
@@ -24,4 +24,5 @@ FROM
 GROUP BY 
 	payroll_year, name
 ORDER BY 
-	Differences;
+	differences;
+
